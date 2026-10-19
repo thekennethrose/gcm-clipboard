@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+extension/schemas/gschemas.compiled
+node_modules/
+.spice-clipboard/
+.DS_Store

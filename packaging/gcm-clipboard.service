@@ -1,0 +1,18 @@
+# systemd user unit for the GCM Clipboard Manager daemon.
+# Installed to ~/.config/systemd/user/ by `make install`.
+[Unit]
+Description=GCM Clipboard Manager history daemon
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=dbus
+BusName=io.github.gcmclipboard.Daemon
+Environment=PYTHONPATH=%h/.local/lib/gcm-clipboard
+ExecStart=/usr/bin/python3 -m gcm_clipboard
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=graphical-session.target

@@ -1,0 +1,60 @@
+<!--
+  D-Bus API of the GCM Clipboard Manager daemon. This file is the contract between the
+  daemon and every client (the shell extension, its prefs window, the CLI).
+
+  Bus name:    io.github.gcmclipboard.Daemon
+  Object path: /io/github/gcmclipboard/Daemon
+-->
+<node>
+  <interface name="io.github.gcmclipboard.Daemon1">
+
+    <!-- Record a copy. Returns the entry id, or 0 if the copy was ignored
+         (blank, too large). Re-adding existing content bumps it to the top. -->
+    <method name="AddText">
+      <arg name="text" type="s" direction="in"/>
+      <arg name="id" type="t" direction="out"/>
+    </method>
+    <method name="AddImage">
+      <arg name="mime" type="s" direction="in"/>
+      <arg name="data" type="ay" direction="in"/>
+      <arg name="id" type="t" direction="out"/>
+    </method>
+
+    <!-- mode: "fuzzy" or "exact". An empty query lists the most recent entries.
+         Each result: (id, kind, preview, image_path, last_used_ms, pinned, positions)
+         kind is "text" or "image"; image_path is "" for text; positions are
+         code-point indices into preview to highlight. -->
+    <method name="Search">
+      <arg name="query" type="s" direction="in"/>
+      <arg name="mode" type="s" direction="in"/>
+      <arg name="limit" type="u" direction="in"/>
+      <arg name="results" type="a(tsssxbau)" direction="out"/>
+    </method>
+
+    <!-- The original bytes of an entry, ready to put back on the clipboard. -->
+    <method name="GetContent">
+      <arg name="id" type="t" direction="in"/>
+      <arg name="mime" type="s" direction="out"/>
+      <arg name="data" type="ay" direction="out"/>
+    </method>
+
+    <method name="Delete">
+      <arg name="id" type="t" direction="in"/>
+    </method>
+    <!-- Pinned entries are exempt from the MaxItems limit. -->
+    <method name="SetPinned">
+      <arg name="id" type="t" direction="in"/>
+      <arg name="pinned" type="b" direction="in"/>
+    </method>
+    <method name="Clear">
+      <arg name="keep_pinned" type="b" direction="in"/>
+      <arg name="removed" type="u" direction="out"/>
+    </method>
+
+    <!-- How many unpinned entries to keep. Persisted to daemon.conf. -->
+    <property name="MaxItems" type="u" access="readwrite"/>
+
+    <!-- Emitted after anything that changes what Search would return. -->
+    <signal name="HistoryChanged"/>
+  </interface>
+</node>

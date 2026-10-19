@@ -1,0 +1,9 @@
+{
+  "uuid": "gcm-clipboard@gcmclipboard.github.io",
+  "name": "GCM Clipboard Manager",
+  "description": "Searchable clipboard history (text and images) that opens at the pointer. Requires the GCM daemon (installed by make install).",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "settings-schema": "org.gnome.shell.extensions.gcm-clipboard",
+  "version-name": "0.2.0",
+  "url": "https://github.com/thekennethrose/gcm-clipboard"
+}

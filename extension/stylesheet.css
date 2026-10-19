@@ -1,0 +1,92 @@
+/* GCM popup. Layout only: no colors here. Backgrounds, text, hover, focus,
+   the accent-colored selection and the switches all come from the shell
+   theme's own classes (candidate-popup-content, candidate-box, popup-menu-item,
+   icon-button, button, toggle-switch), so the popup follows light/dark and
+   the accent color like the rest of the shell. Secondary text is dimmed with
+   actor opacity in code for the same reason.
+
+   The scroll area and the settings body share one fixed height so the panel
+   never jumps around, whether results change or settings open. */
+
+.gcm-clipboard-popup {
+  padding: 10px;
+  spacing: 8px;
+  border-radius: 14px;
+}
+
+.gcm-clipboard-header { spacing: 8px; }
+
+.gcm-clipboard-search { border-radius: 8px; }
+
+.gcm-clipboard-mode {
+  font-size: 0.85em;
+  padding: 0 4px;
+  /* Width is pinned in popup.js so "Fuzzy"/"Exact" never resize the entry. */
+  text-align: center;
+}
+
+.gcm-clipboard-icon-button {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: transparent;
+}
+.gcm-clipboard-icon-button StIcon { icon-size: 16px; }
+
+.gcm-clipboard-scroll,
+.gcm-clipboard-settings { height: 420px; }
+
+.gcm-clipboard-list { spacing: 2px; }
+
+.gcm-clipboard-row {
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.gcm-clipboard-row-box { spacing: 10px; }
+
+.gcm-clipboard-thumb { border-radius: 4px; }
+
+.gcm-clipboard-pin { icon-size: 14px; }
+
+.gcm-clipboard-status,
+.gcm-clipboard-hint {
+  font-size: 0.85em;
+  padding: 2px 4px;
+}
+
+/* ---- settings view ---- */
+
+.gcm-clipboard-settings-view { spacing: 8px; }
+
+.gcm-clipboard-settings-title { font-weight: bold; }
+
+.gcm-clipboard-setting {
+  padding: 10px 12px;
+  margin: 0;
+  border-radius: 8px;
+  min-height: 40px;
+}
+
+.gcm-clipboard-setting-box { spacing: 12px; }
+
+.gcm-clipboard-setting-text { spacing: 2px; }
+
+.gcm-clipboard-setting-subtitle { font-size: 0.85em; }
+
+.gcm-clipboard-separator { padding: 0 12px; }
+
+.gcm-clipboard-shortcut {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: normal;
+}
+
+.gcm-clipboard-stepper { spacing: 4px; }
+
+.gcm-clipboard-count {
+  width: 4.5em;
+  min-height: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+}

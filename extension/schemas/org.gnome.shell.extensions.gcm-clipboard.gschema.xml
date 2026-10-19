@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UI settings owned by the extension. History size lives in the daemon
+     (MaxItems over D-Bus) so there's exactly one source of truth for it. -->
+<schemalist gettext-domain="gcm-clipboard">
+  <schema id="org.gnome.shell.extensions.gcm-clipboard" path="/org/gnome/shell/extensions/gcm-clipboard/">
+    <key name="toggle-popup" type="as">
+      <!-- Super+V is taken by GNOME's notification list. -->
+      <default><![CDATA[['<Super><Shift>v']]]></default>
+      <summary>Shortcut that opens the clipboard popup</summary>
+    </key>
+    <key name="auto-paste" type="b">
+      <default>true</default>
+      <summary>Paste immediately after choosing an entry</summary>
+      <description>When off, choosing an entry only puts it on the clipboard.</description>
+    </key>
+    <key name="terminal-aware-paste" type="b">
+      <default>true</default>
+      <summary>Paste with Ctrl+Shift+V into terminals</summary>
+      <description>Only used when auto-paste is on. Terminals are recognised by their window class or app id.</description>
+    </key>
+    <key name="default-search-mode" type="s">
+      <choices>
+        <choice value="fuzzy"/>
+        <choice value="exact"/>
+      </choices>
+      <default>'fuzzy'</default>
+      <summary>Search mode the popup opens in (Tab toggles)</summary>
+    </key>
+    <key name="result-limit" type="i">
+      <range min="5" max="500"/>
+      <default>50</default>
+      <summary>Maximum entries shown in the popup</summary>
+    </key>
+    <key name="popup-width" type="i">
+      <range min="280" max="1200"/>
+      <default>480</default>
+      <summary>Popup width in pixels</summary>
+    </key>
+  </schema>
+</schemalist>

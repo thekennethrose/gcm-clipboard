@@ -1,0 +1,6 @@
+# D-Bus activation: the first call to the bus name starts the systemd unit.
+# Installed to ~/.local/share/dbus-1/services/ by `make install`.
+[D-BUS Service]
+Name=io.github.gcmclipboard.Daemon
+Exec=/bin/false
+SystemdService=gcm-clipboard.service
