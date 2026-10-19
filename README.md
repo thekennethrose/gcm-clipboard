@@ -125,6 +125,10 @@ To try the extension without risking your session, run a nested shell:
 - **Terminal detection is a list of known terminals** (GNOME Terminal,
   Console, Ptyxis, Kitty, Alacritty, WezTerm, Konsole and more). A terminal
   inside another app, like VS Code's, still gets Ctrl+V.
+- **The default shortcut is also the terminal paste key.** Pressing
+  Ctrl+Shift+V yourself in a terminal opens the popup instead of pasting;
+  choosing an entry from it pastes as usual. Record another shortcut in
+  settings if you'd rather keep Ctrl+Shift+V for the terminal.
 - **Opens at the mouse pointer**, not the text caret.
 - **Only the regular clipboard**, not the middle-click PRIMARY selection.
 - **Images are PNG only**, and thumbnails decode the full image.

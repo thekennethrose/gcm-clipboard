@@ -13,17 +13,33 @@ import {isTerminal} from './terminals.js';
 // the app window before the synthetic keystroke arrives.
 const PASTE_DELAY_MS = 60;
 
+// Virtual key events reach Mutter's shortcut handling a little after they're
+// sent, so the paused shortcut stays off for a while after the last key.
+const SHORTCUT_RESUME_DELAY_MS = 250;
+
 export class Paster {
-    constructor() {
+    /**
+     * @param {object} hooks
+     * @param {() => void} hooks.pauseShortcut   stop our shortcut from catching the paste keys
+     * @param {() => void} hooks.resumeShortcut  bring it back
+     */
+    constructor({pauseShortcut, resumeShortcut}) {
         const seat = Clutter.get_default_backend().get_default_seat();
         this._keyboard = seat.create_virtual_device(Clutter.InputDeviceType.KEYBOARD_DEVICE);
+        this._pauseShortcut = pauseShortcut;
+        this._resumeShortcut = resumeShortcut;
         this._pasteTimeoutId = 0;
+        this._resumeTimeoutId = 0;
     }
 
+    /** Leaves a paused shortcut paused: the caller is removing it anyway. */
     destroy() {
-        if (this._pasteTimeoutId)
-            GLib.source_remove(this._pasteTimeoutId);
+        for (const id of [this._pasteTimeoutId, this._resumeTimeoutId]) {
+            if (id)
+                GLib.source_remove(id);
+        }
         this._pasteTimeoutId = 0;
+        this._resumeTimeoutId = 0;
         this._keyboard = null;
     }
 
@@ -50,6 +66,16 @@ export class Paster {
     }
 
     _pressPaste(withShift) {
+        if (this._resumeTimeoutId)
+            GLib.source_remove(this._resumeTimeoutId); // still paused from the last paste
+        else
+            this._pauseShortcut();
+        this._resumeTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, SHORTCUT_RESUME_DELAY_MS, () => {
+            this._resumeTimeoutId = 0;
+            this._resumeShortcut();
+            return GLib.SOURCE_REMOVE;
+        });
+
         const now = GLib.get_monotonic_time();
         const press = (key, state) => this._keyboard.notify_keyval(now, key, state);
         press(Clutter.KEY_Control_L, Clutter.KeyState.PRESSED);

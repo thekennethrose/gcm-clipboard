@@ -21,7 +21,13 @@ export default class GcmClipboardExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         this._client = new DaemonClient(() => this._popup?.refreshIfOpen());
-        this._paster = new Paster();
+        // The shortcut can be the very keys the Paster types (Ctrl+Shift+V
+        // into a terminal), and Mutter would take them as the shortcut
+        // instead of passing them to the app. So it is paused meanwhile.
+        this._paster = new Paster({
+            pauseShortcut: () => Main.wm.removeKeybinding(KEYBINDING),
+            resumeShortcut: () => this._addShortcut(),
+        });
 
         this._watcher = new ClipboardWatcher({
             onText: text => this._client.addText(text).catch(logFailure('store copied text')),
@@ -36,14 +42,13 @@ export default class GcmClipboardExtension extends Extension {
         });
         Main.layoutManager.uiGroup.add_child(this._popup);
 
-        Main.wm.addKeybinding(
-            KEYBINDING, this._settings, Meta.KeyBindingFlags.NONE,
-            // POPUP is included so the same shortcut closes our own popup.
-            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
-            () => this._popup.toggle());
+        this._addShortcut();
     }
 
     disable() {
+        // The Paster goes first so a paused shortcut can't come back after this.
+        this._paster.destroy();
+        this._paster = null;
         Main.wm.removeKeybinding(KEYBINDING);
 
         this._popup.close();
@@ -52,11 +57,17 @@ export default class GcmClipboardExtension extends Extension {
 
         this._watcher.destroy();
         this._watcher = null;
-        this._paster.destroy();
-        this._paster = null;
         this._client.destroy();
         this._client = null;
         this._settings = null;
+    }
+
+    _addShortcut() {
+        Main.wm.addKeybinding(
+            KEYBINDING, this._settings, Meta.KeyBindingFlags.NONE,
+            // POPUP is included so the same shortcut closes our own popup.
+            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
+            () => this._popup.toggle());
     }
 
     async _paste(entry) {
