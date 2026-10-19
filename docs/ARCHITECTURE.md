@@ -53,8 +53,11 @@ there's no clean test harness. So we split it the way GPaste does:
   number, and replies that aren't the latest are dropped, so a slow reply
   for `"ab"` can never overwrite the results for `"abc"`.
 - **Choose:** `GetContent` → put it on the clipboard → close the popup →
-  60 ms later, a virtual keyboard sends Ctrl+V to the window that now has
-  focus again. Setting the clipboard fires `owner-changed` again, the copy is
+  60 ms later, a virtual keyboard sends Ctrl+V (Ctrl+Shift+V for a terminal)
+  to the window that now has focus again. Mutter would take those keys as our
+  own shortcut when they match it, as the default Ctrl+Shift+V does, so the
+  shortcut is unregistered while they're sent and comes back 250 ms later.
+  Setting the clipboard fires `owner-changed` again, the copy is
   re-added, and dedup bumps it to the top. That gives "most recently used"
   ordering without any extra code.
 
@@ -94,6 +97,8 @@ under plain `unittest` with no desktop at all.
 - **Dedup:** `digest` is UNIQUE. Re-copying updates `last_used` and nothing else.
 - **Ordering:** `last_used` is stamped strictly increasing, even if the
   wall clock stalls or steps backwards, so "newest" is always well defined.
+  `History.search` lists pinned entries above all others, with or without a
+  query; each group is ranked on its own and the result limit applies after.
 - **Retention:** after every add, unpinned rows beyond the newest `max_items`
   are deleted along with their blob files. Pinned rows never count against
   the limit and never expire.
