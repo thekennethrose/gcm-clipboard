@@ -19,6 +19,7 @@ from .store import Store
 log = logging.getLogger(__name__)
 
 Listener = Callable[[], None]
+IndexItem = tuple[Entry, Candidate]
 
 
 class History:
@@ -26,9 +27,9 @@ class History:
         self._store = store
         self._settings = settings
         self._listeners: list[Listener] = []
-        # Search index, rebuilt lazily after any change. Copies are rare next
-        # to keystrokes, so "throw it away and reload" is plenty.
-        self._index: list[tuple[Entry, Candidate]] | None = None
+        # Search index as (pinned, unpinned), rebuilt lazily after any change.
+        # Copies are rare next to keystrokes, so "throw it away and reload" is plenty.
+        self._index: tuple[list[IndexItem], list[IndexItem]] | None = None
 
         self._store.prune(self.max_items)  # the limit may have shrunk while we were stopped
 
@@ -57,7 +58,10 @@ class History:
     # ---- lookup -----------------------------------------------------------
 
     def search(self, query: str, mode: Mode = Mode.FUZZY, limit: int = 50) -> list[SearchHit]:
-        ranked = search.rank(query, self._candidates(), mode, limit)
+        # Pinned entries always sit above the rest; each group is ranked on its own.
+        pinned, unpinned = self._candidates()
+        ranked = search.rank(query, pinned, mode, limit)
+        ranked += search.rank(query, unpinned, mode, limit - len(ranked))
         return [SearchHit(entry, m.score, _within_preview(m.positions, entry)) for entry, m in ranked]
 
     def get(self, entry_id: int) -> Entry | None:
@@ -108,9 +112,14 @@ class History:
         for listener in self._listeners:
             listener()
 
-    def _candidates(self) -> list[tuple[Entry, Candidate]]:
+    def _candidates(self) -> tuple[list[IndexItem], list[IndexItem]]:
+        """(pinned, unpinned), each newest-first."""
         if self._index is None:
-            self._index = [(e, Candidate.of(key)) for e, key in self._store.iter_search_keys()]
+            pinned: list[IndexItem] = []
+            unpinned: list[IndexItem] = []
+            for entry, key in self._store.iter_search_keys():
+                (pinned if entry.pinned else unpinned).append((entry, Candidate.of(key)))
+            self._index = (pinned, unpinned)
         return self._index
 
 

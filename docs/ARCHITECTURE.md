@@ -94,6 +94,8 @@ under plain `unittest` with no desktop at all.
 - **Dedup:** `digest` is UNIQUE. Re-copying updates `last_used` and nothing else.
 - **Ordering:** `last_used` is stamped strictly increasing, even if the
   wall clock stalls or steps backwards, so "newest" is always well defined.
+  `History.search` lists pinned entries above all others, with or without a
+  query; each group is ranked on its own and the result limit applies after.
 - **Retention:** after every add, unpinned rows beyond the newest `max_items`
   are deleted along with their blob files. Pinned rows never count against
   the limit and never expire.

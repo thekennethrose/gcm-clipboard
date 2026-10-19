@@ -68,6 +68,42 @@ class HistoryTests(unittest.TestCase):
         [hit] = self.history.search("needle", Mode.EXACT)
         self.assertEqual(hit.positions, ())
 
+    def test_pinned_entries_stay_on_top(self):
+        old = self.history.add_text("old pinned")
+        self.history.set_pinned(old, True)
+        for i in range(3):
+            self.history.add_text(f"copy {i}")
+        self.assertEqual(self.previews(), ["old pinned", "copy 2", "copy 1", "copy 0"])
+
+    def test_pinned_entries_newest_first(self):
+        first = self.history.add_text("first")
+        second = self.history.add_text("second")
+        self.history.add_text("loose")
+        self.history.set_pinned(first, True)
+        self.history.set_pinned(second, True)
+        self.assertEqual(self.previews(), ["second", "first", "loose"])
+
+    def test_unpinned_entry_drops_back_into_place(self):
+        entry_id = self.history.add_text("old")
+        self.history.add_text("new")
+        self.history.set_pinned(entry_id, True)
+        self.history.set_pinned(entry_id, False)
+        self.assertEqual(self.previews(), ["new", "old"])
+
+    def test_pinned_match_beats_better_unpinned_match(self):
+        weak = self.history.add_text("grapple")
+        self.history.add_text("apple")
+        self.history.set_pinned(weak, True)
+        self.assertEqual(self.previews("apple"), ["grapple", "apple"])
+
+    def test_pinned_entries_survive_the_result_limit(self):
+        pinned = self.history.add_text("keep me")
+        self.history.set_pinned(pinned, True)
+        for i in range(5):
+            self.history.add_text(f"copy {i}")
+        hits = self.history.search("", limit=3)
+        self.assertEqual([h.entry.preview for h in hits], ["keep me", "copy 4", "copy 3"])
+
     def test_listeners_fire_on_each_change(self):
         entry_id = self.history.add_text("one")
         self.history.set_pinned(entry_id, True)
