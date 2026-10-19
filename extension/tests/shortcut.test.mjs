@@ -5,12 +5,12 @@ import {test} from 'node:test';
 import {accelFromKey, formatAccel} from '../lib/shortcut.js';
 
 test('builds an accelerator in GSettings form', () => {
-    assert.equal(accelFromKey('v', {super: true, shift: true}), '<Super><Shift>v');
+    assert.equal(accelFromKey('v', {ctrl: true, shift: true}), '<Control><Shift>v');
     assert.equal(accelFromKey('h', {ctrl: true, alt: true}), '<Control><Alt>h');
 });
 
 test('names the unshifted key when Shift is held', () => {
-    assert.equal(accelFromKey('V', {super: true, shift: true}), '<Super><Shift>v');
+    assert.equal(accelFromKey('V', {ctrl: true, shift: true}), '<Control><Shift>v');
 });
 
 test('keeps listening while only modifiers are held', () => {
@@ -28,7 +28,8 @@ test('allows a bare function key', () => {
 });
 
 test('formats accelerators for display', () => {
-    assert.equal(formatAccel('<Super><Shift>v'), 'Super+Shift+V');
+    assert.equal(formatAccel('<Control><Shift>v'), 'Ctrl+Shift+V');
+    assert.equal(formatAccel('<Super><Alt>k'), 'Super+Alt+K');
     assert.equal(formatAccel('<Primary><Alt>space'), 'Ctrl+Alt+Space');
     assert.equal(formatAccel(''), 'Disabled');
 });

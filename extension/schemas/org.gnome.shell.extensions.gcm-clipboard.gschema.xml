@@ -4,8 +4,7 @@
 <schemalist gettext-domain="gcm-clipboard">
   <schema id="org.gnome.shell.extensions.gcm-clipboard" path="/org/gnome/shell/extensions/gcm-clipboard/">
     <key name="toggle-popup" type="as">
-      <!-- Super+V is taken by GNOME's notification list. -->
-      <default><![CDATA[['<Super><Shift>v']]]></default>
+      <default><![CDATA[['<Control><Shift>v']]]></default>
       <summary>Shortcut that opens the clipboard popup</summary>
     </key>
     <key name="auto-paste" type="b">

@@ -124,7 +124,7 @@ function popupGroup(settings) {
 
 function shortcutRow(settings) {
     const row = new Adw.EntryRow({
-        title: 'Shortcut, e.g. <Super><Shift>v',
+        title: 'Shortcut, e.g. <Control><Shift>v',
         text: settings.get_strv('toggle-popup')[0] ?? '',
         show_apply_button: true,
     });

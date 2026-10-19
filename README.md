@@ -54,7 +54,7 @@ it all but leaves your history in `~/.local/share/gcm-clipboard/`.
 
 ## Use
 
-Press **Super+Shift+V**. (GNOME already uses Super+V for notifications.)
+Press **Ctrl+Shift+V**.
 
 | Key | Action |
 |---|---|

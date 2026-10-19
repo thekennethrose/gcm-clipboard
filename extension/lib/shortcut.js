@@ -1,4 +1,4 @@
-// Keyboard shortcuts in GSettings accelerator form ('<Super><Shift>v'):
+// Keyboard shortcuts in GSettings accelerator form ('<Control><Shift>v'):
 // building one from a key press and showing one to people.
 //
 // No GNOME imports, so this runs under plain Node for tests.
@@ -46,7 +46,7 @@ export function accelFromKey(keyName, mods) {
     return accel + keyName;
 }
 
-/** '<Super><Shift>v' -> 'Super+Shift+V'; '' -> 'Disabled'. */
+/** '<Control><Shift>v' -> 'Ctrl+Shift+V'; '' -> 'Disabled'. */
 export function formatAccel(accel) {
     if (!accel)
         return 'Disabled';
