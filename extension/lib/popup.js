@@ -156,6 +156,9 @@ class HistoryPopup extends St.Widget {
             x_expand: true,
         });
         this._scroll.set_child(this._list);
+        // St adds the child after its scrollbars, so the rows would paint over
+        // the overlay scrollbar and take its clicks. Put the bar back on top.
+        this._scroll.set_child_above_sibling(this._scroll.vscroll, null);
 
         this._status = new St.Label({style_class: 'gcm-clipboard-status', visible: false, opacity: DIM_OPACITY});
         this._hint = new St.Label({style_class: 'gcm-clipboard-hint', text: KEY_HINT, opacity: DIM_OPACITY});
